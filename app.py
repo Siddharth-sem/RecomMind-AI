@@ -1,6 +1,23 @@
 import streamlit as st
 import pandas as pd
 
+@st.cache_resource(show_spinner="Loading movie engine...")
+def load_movie_engine():
+    from modules import movie_recommender
+    return movie_recommender
+
+
+@st.cache_resource(show_spinner="Loading semantic model...")
+def load_embedding_model():
+    from modules.movie_recommender import get_embedding_model
+    return get_embedding_model()
+
+
+@st.cache_resource(show_spinner="Loading Qwen + LoRA...")
+def load_ai_model():
+    from modules.llm_engine import load_llm
+    return load_llm()
+
 from modules.movie_recommender import (
     get_collaborative_recommendations,
     get_content_recommendations,
@@ -22,6 +39,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+
+# INITIALIZE ENGINE HERE
+load_movie_engine()
 
 # ==========================================
 # CUSTOM CSS
