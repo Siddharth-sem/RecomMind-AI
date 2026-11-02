@@ -1,0 +1,21 @@
+{
+    "experiment": "LoRA Fine-Tuning Evaluation",
+    "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "fine_tuning_method": "QLoRA",
+    "training_epochs": 3,
+    "results": {
+        "response_formatting": "Improved",
+        "movie_title_generation": "Partially successful",
+        "genre_accuracy": "Incorrect in tested example",
+        "rating_accuracy": "Incorrect in tested example",
+        "hallucination": "Observed"
+    },
+    "test_case": {
+        "movie": "Kolya (1996)",
+        "actual_genre": "Comedy",
+        "predicted_genre": "Drama",
+        "actual_rating": 3.99,
+        "predicted_rating": 3.0
+    },
+    "conclusion": "LoRA improved response formatting but did not demonstrate reliable factual movie recommendation. The production system will use dataset-grounded retrieval and metadata validation."
+}

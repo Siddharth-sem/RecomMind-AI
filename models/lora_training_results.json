@@ -1,0 +1,20 @@
+{
+    "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "fine_tuning_method": "LoRA",
+    "quantization": "4-bit NF4",
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "epochs": 3,
+    "training_examples": 3009,
+    "testing_examples": 531,
+    "training_loss": [
+        0.525107,
+        0.515428,
+        0.465767
+    ],
+    "validation_loss": [
+        0.505427,
+        0.492056,
+        0.488286
+    ]
+}

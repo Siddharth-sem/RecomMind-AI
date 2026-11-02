@@ -1,0 +1,15 @@
+{
+    "project": "RecomMind AI",
+    "domain": "Movies",
+    "content_weight": 0.4,
+    "collaborative_weight": 0.6,
+    "collaborative_model": "Improved SVD",
+    "content_model": "TF-IDF with Cosine Similarity",
+    "rating_prediction_model": "KNNWithMeans",
+    "evaluation": {
+        "svd_rmse": 1.0022279261828726,
+        "knn_rmse": 0.9533083147728263,
+        "svd_precision_at_10": 0.21500000000000002,
+        "svd_recall_at_10": 0.10442107138092163
+    }
+}

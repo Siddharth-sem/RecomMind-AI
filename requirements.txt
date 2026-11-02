@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+scikit-learn
+joblib
+sentence-transformers
+transformers
+peft
+torch
+accelerate
+Pillow

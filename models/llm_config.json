@@ -1,0 +1,9 @@
+{
+    "model_name": "Qwen/Qwen2.5-0.5B-Instruct",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "embedding_dimensions": 384,
+    "retrieval_method": "Semantic Search",
+    "generation_method": "Retrieval-Augmented Generation",
+    "title_validation": true,
+    "max_retrieved_movies": 5
+}
