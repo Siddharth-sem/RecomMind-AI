@@ -373,8 +373,7 @@ elif page == "Discover Movies":
 
                 for _, movie in results.iterrows():
 
-                    st.markdown(
-                        textwrap.dedent(f"""
+                    st.html(f"""
                         <div class="movie-card">
 
                             <div class="movie-title">
@@ -392,9 +391,7 @@ elif page == "Discover Movies":
                             </div>
 
                         </div>
-                        """),
-                        unsafe_allow_html=True
-                    )
+                        """)
 
             except Exception as error:
                 st.error(str(error))
@@ -432,8 +429,7 @@ elif page == "Discover Movies":
 
                 for _, movie in results.iterrows():
 
-                    st.markdown(
-                        textwrap.dedent(f"""
+                    st.html(f"""
                         <div class="movie-card">
 
                             <div class="movie-title">
@@ -451,9 +447,7 @@ elif page == "Discover Movies":
                             </div>
 
                         </div>
-                        """),
-                        unsafe_allow_html=True
-                    )
+                        """)
 
             except Exception as error:
                 st.error(str(error))
