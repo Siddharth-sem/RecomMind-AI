@@ -293,7 +293,17 @@ def evaluate_recommendation_models(k=10, max_users=None):
 
     if max_users is not None:
 
-        selected_users = sorted(test_users)[:max_users]
+        rng = np.random.default_rng(42)
+
+        available_users = list(test_users.keys())
+
+        selected_users = rng.choice(
+            available_users,
+            size=min(max_users, len(available_users)),
+            replace=False
+        )
+
+        selected_users = sorted(selected_users.tolist())
 
         test_users = {
             user_id: test_users[user_id]

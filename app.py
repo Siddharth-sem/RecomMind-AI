@@ -49,44 +49,96 @@ load_movie_engine()
 
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
 
 .stApp {
-    background-color: #0e1117;
+    background: #0b1020;
+    color: #f1f5f9;
+}
+
+.block-container {
+    padding-top: 2.5rem;
+    max-width: 1200px;
 }
 
 .main-title {
-    font-size: 42px;
+    font-size: 44px;
     font-weight: 800;
     color: #ffffff;
+    letter-spacing: -1.5px;
 }
 
 .subtitle {
-    color: #a0a0a0;
+    color: #94a3b8;
     font-size: 17px;
+    margin-top: 8px;
 }
 
 .movie-card {
-    background-color: #1c2230;
-    padding: 20px;
-    border-radius: 14px;
-    margin-bottom: 15px;
-    border: 1px solid #303848;
+    background: linear-gradient(145deg, #172033, #111827);
+    padding: 22px;
+    border-radius: 16px;
+    margin-bottom: 18px;
+    border: 1px solid #263449;
+    transition: 0.2s ease;
+}
+
+.movie-card:hover {
+    border-color: #6366f1;
+    transform: translateY(-2px);
 }
 
 .movie-title {
     font-size: 21px;
-    font-weight: bold;
-    color: #ffffff;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 10px;
 }
 
 .movie-meta {
-    color: #b0b8c5;
+    color: #a5b4c8;
     font-size: 14px;
+    margin-bottom: 6px;
 }
 
 .movie-explanation {
-    color: #e0e0e0;
-    line-height: 1.6;
+    color: #dbeafe;
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+div[data-testid="stMetric"] {
+    background: #172033;
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid #263449;
+}
+
+div[data-testid="stMetricLabel"] {
+    color: #94a3b8;
+}
+
+div[data-testid="stMetricValue"] {
+    color: #ffffff;
+}
+
+.stButton > button {
+    border-radius: 10px;
+    font-weight: 600;
+    min-height: 42px;
+}
+
+section[data-testid="stSidebar"] {
+    background: #111827;
+    border-right: 1px solid #263449;
+}
+
+hr {
+    border-color: #263449;
 }
 
 </style>
