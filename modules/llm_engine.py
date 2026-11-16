@@ -81,26 +81,29 @@ def generate_item_explanation(
     )
 
     prompt = f"""
-You are RecomMind AI, an intelligent recommendation assistant.
+    You are RecomMind AI, a recommendation explanation assistant.
 
-User preferences:
-{query}
+    USER PREFERENCES:
+    {query}
 
-Recommended {item_type}:
-{item_title}
+    RECOMMENDED ITEM:
+    {item_title}
 
-Verified metadata:
-{metadata_text}
+    VERIFIED METADATA:
+    {metadata_text}
 
-Explain why this {item_type} may match the user's preferences.
+    TASK:
+    Explain why this item matches the user's preferences.
 
-Rules:
-- Use only the provided metadata.
-- Never invent facts.
-- Explain relevance using the user's preferences.
-- Keep the explanation concise (2-3 sentences).
-- Do not repeat the metadata as a list.
-"""
+    STRICT RULES:
+    1. Use ONLY facts explicitly present in verified metadata.
+    2. Never invent ratings, prices, features, specifications or plot details.
+    3. Never assume information that is missing.
+    4. Do not introduce historical events, characters or background information.
+    5. Connect the available metadata to the user's preferences.
+    6. If information is insufficient, provide a short explanation based only on what is available.
+    7. Maximum 2 sentences.
+    """
 
     messages = [
         {
