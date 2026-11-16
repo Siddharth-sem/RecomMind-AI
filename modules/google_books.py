@@ -53,7 +53,10 @@ def search_books(query, max_results=10):
                     info.get("imageLinks", {}).get("thumbnail", "")
                     .replace("http://", "https://")
                 ),
-                "preview_link": info.get("previewLink")
+                "preview_link": info.get("previewLink"),
+                "industry_identifiers": info.get(
+                    "industryIdentifiers", []
+                )
             })
 
         return results
