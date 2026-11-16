@@ -60,37 +60,46 @@ def load_llm():
     return tokenizer, model
 
 
-def generate_movie_explanation(
+def generate_item_explanation(
     query,
-    movie_title,
-    genres,
-    rating
+    item_type,
+    item_title,
+    metadata
 ):
-
     if not isinstance(query, str) or not query.strip():
         raise ValueError("Query cannot be empty.")
 
+    if not isinstance(metadata, dict):
+        raise ValueError("Metadata must be a dictionary.")
+
     tokenizer, model = load_llm()
 
+    metadata_text = "\n".join(
+        f"{key}: {value}"
+        for key, value in metadata.items()
+        if value is not None and str(value).strip()
+    )
+
     prompt = f"""
-You are RecomMind AI, a movie recommendation assistant.
+You are RecomMind AI, an intelligent recommendation assistant.
 
 User preferences:
 {query}
 
-Movie:
-Title: {movie_title}
-Genres: {genres}
-Average rating: {rating:.2f}/5
+Recommended {item_type}:
+{item_title}
 
-Explain why this movie may match the user's preferences.
+Verified metadata:
+{metadata_text}
+
+Explain why this {item_type} may match the user's preferences.
 
 Rules:
-- Use only the metadata provided.
-- Do not invent plot details, characters, directors or actors.
-- Do not invent movie facts.
-- Explain relevance using genres and user preferences.
-- Keep your answer concise.
+- Use only the provided metadata.
+- Never invent facts.
+- Explain relevance using the user's preferences.
+- Keep the explanation concise (2-3 sentences).
+- Do not repeat the metadata as a list.
 """
 
     messages = [
@@ -114,7 +123,6 @@ Rules:
     }
 
     with torch.inference_mode():
-
         output = model.generate(
             **inputs,
             max_new_tokens=100,
@@ -128,12 +136,27 @@ Rules:
         inputs["input_ids"].shape[-1]:
     ]
 
-    explanation = tokenizer.decode(
+    return tokenizer.decode(
         generated_tokens,
         skip_special_tokens=True
     ).strip()
 
-    return explanation
+
+def generate_movie_explanation(
+    query,
+    movie_title,
+    genres,
+    rating
+):
+    return generate_item_explanation(
+        query=query,
+        item_type="movie",
+        item_title=movie_title,
+        metadata={
+            "Genres": genres,
+            "Average rating": f"{rating:.2f}/5"
+        }
+    )
 
 
 def explain_recommendations(query, recommendations):
