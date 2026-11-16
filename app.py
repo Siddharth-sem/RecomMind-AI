@@ -375,9 +375,11 @@ elif page == "Discover Movies":
                     st.markdown(
                         f"""
                         <div class="movie-card">
+
                             <div class="movie-title">
-                                {movie['title']}
+                                🎬 {movie['title']}
                             </div>
+
                             <div>
                                 <span class="movie-badge">
                                     {movie['genre_text']}
@@ -387,6 +389,7 @@ elif page == "Discover Movies":
                             <div class="movie-score">
                                 ⭐ Predicted Rating: {movie['predicted_rating']:.2f}/5
                             </div>
+
                         </div>
                         """,
                         unsafe_allow_html=True
@@ -431,16 +434,21 @@ elif page == "Discover Movies":
                     st.markdown(
                         f"""
                         <div class="movie-card">
+
                             <div class="movie-title">
-                                {movie['title']}
+                                🎬 {movie['title']}
                             </div>
-                            <div class="movie-meta">
-                                Genres: {movie['genre_text']}
+
+                            <div>
+                                <span class="movie-badge">
+                                    {movie['genre_text']}
+                                </span>
                             </div>
-                            <div class="movie-meta">
-                                Similarity:
-                                {movie['content_similarity']:.3f}
+
+                            <div class="movie-score">
+                                🎯 Similarity Score: {movie['content_similarity']:.3f}
                             </div>
+
                         </div>
                         """,
                         unsafe_allow_html=True
