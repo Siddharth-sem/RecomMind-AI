@@ -49,9 +49,10 @@ def search_books(query, max_results=10):
                 "average_rating": info.get("averageRating"),
                 "ratings_count": info.get("ratingsCount", 0),
                 "page_count": info.get("pageCount"),
-                "thumbnail": info.get(
-                    "imageLinks", {}
-                ).get("thumbnail"),
+                "thumbnail": (
+                    info.get("imageLinks", {}).get("thumbnail", "")
+                    .replace("http://", "https://")
+                ),
                 "preview_link": info.get("previewLink")
             })
 
