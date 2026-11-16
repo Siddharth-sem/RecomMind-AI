@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import textwrap
+from modules.tmdb_client import search_movie
 
 @st.cache_resource(show_spinner="Loading movie engine...")
 def load_movie_engine():
@@ -40,6 +41,69 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+@st.cache_data(show_spinner=False)
+def get_movie_details(title):
+    try:
+        return search_movie(title)
+    except Exception:
+        return None
+
+
+def display_movie_card(movie, explanation=None):
+
+    details = get_movie_details(movie["title"])
+
+    col1, col2 = st.columns([1, 3])
+
+    with col1:
+        if details and details.get("poster_url"):
+            st.image(
+                details["poster_url"],
+                use_container_width=True
+            )
+        else:
+            st.markdown("🎬 Poster unavailable")
+
+    with col2:
+        st.subheader(movie["title"])
+
+        if details:
+            st.caption(
+                f"Release Date: {details.get('release_date', 'Unknown')} "
+                f"| TMDB Rating: {details.get('rating', 'N/A')}"
+            )
+
+            if details.get("overview"):
+                st.write(details["overview"])
+
+        genres = movie.get("genre_text", movie.get("genres", ""))
+
+        if genres:
+            st.caption(f"Genres: {genres}")
+
+        if movie.get("predicted_rating") is not None:
+            st.write(
+                f"⭐ Predicted Rating: "
+                f"{movie['predicted_rating']:.2f}/5"
+            )
+
+        if movie.get("semantic_similarity") is not None:
+            st.write(
+                f"🧠 Semantic Similarity: "
+                f"{movie['semantic_similarity']:.3f}"
+            )
+
+        if movie.get("hybrid_score") is not None:
+            st.write(
+                f"🎯 Hybrid Score: "
+                f"{movie['hybrid_score']:.3f}"
+            )
+
+        if explanation:
+            st.markdown("**🤖 AI Explanation**")
+            st.write(explanation)
+
+    st.divider()
 
 
 # INITIALIZE ENGINE HERE
@@ -373,25 +437,7 @@ elif page == "Discover Movies":
 
                 for _, movie in results.iterrows():
 
-                    st.html(f"""
-                        <div class="movie-card">
-
-                            <div class="movie-title">
-                                🎬 {movie['title']}
-                            </div>
-
-                            <div>
-                                <span class="movie-badge">
-                                    {movie['genre_text']}
-                                </span>
-                            </div>
-
-                            <div class="movie-score">
-                                ⭐ Predicted Rating: {movie['predicted_rating']:.2f}/5
-                            </div>
-
-                        </div>
-                        """)
+                    display_movie_card(movie)
 
             except Exception as error:
                 st.error(str(error))
@@ -429,25 +475,7 @@ elif page == "Discover Movies":
 
                 for _, movie in results.iterrows():
 
-                    st.html(f"""
-                        <div class="movie-card">
-
-                            <div class="movie-title">
-                                🎬 {movie['title']}
-                            </div>
-
-                            <div>
-                                <span class="movie-badge">
-                                    {movie['genre_text']}
-                                </span>
-                            </div>
-
-                            <div class="movie-score">
-                                🎯 Similarity Score: {movie['content_similarity']:.3f}
-                            </div>
-
-                        </div>
-                        """)
+                    display_movie_card(movie)
 
             except Exception as error:
                 st.error(str(error))
@@ -488,31 +516,7 @@ elif page == "Discover Movies":
 
                 for _, movie in results.iterrows():
 
-                    st.html(f"""
-                        <div class="movie-card">
-
-                            <div class="movie-title">
-                                🎬 {movie['title']}
-                            </div>
-
-                            <div>
-                                <span class="movie-badge">
-                                    {movie['genre_text']}
-                                </span>
-                            </div>
-
-                            <div class="movie-score">
-                                🧠 Semantic Similarity:
-                                {movie['semantic_similarity']:.3f}
-                            </div>
-
-                            <div class="movie-score">
-                                ⭐ Hybrid Score:
-                                {movie['hybrid_score']:.3f}
-                            </div>
-
-                        </div>
-                        """)
+                    display_movie_card(movie)
 
             except Exception as error:
                 st.error(str(error))
@@ -590,43 +594,9 @@ elif page == "Personalized Recommendations":
 
                     for _, movie in results.iterrows():
 
-                        st.markdown(
-                            f"""
-                            <div class="movie-card">
-
-                                <div class="movie-title">
-                                    🎬 {movie['title']}
-                                </div>
-
-                                <div class="movie-meta">
-                                    Genres: {movie['genres']}
-                                </div>
-
-                                <div class="movie-meta">
-                                    ⭐ Average Rating:
-                                    {movie['rating']}/5
-                                </div>
-
-                                <div class="movie-meta">
-                                    Semantic Similarity:
-                                    {movie['semantic_similarity']}
-                                </div>
-
-                                <div class="movie-meta">
-                                    Hybrid Score:
-                                    {movie['hybrid_score']}
-                                </div>
-
-                                <hr>
-
-                                <div class="movie-explanation">
-                                    <b>🤖 AI Explanation</b><br>
-                                    {movie['explanation']}
-                                </div>
-
-                            </div>
-                            """,
-                            unsafe_allow_html=True
+                        display_movie_card(
+                            movie,
+                            explanation=movie["explanation"]
                         )
 
             except Exception as error:
@@ -644,3 +614,4 @@ st.caption(
     "RecomMind AI | Hybrid Recommendation System | "
     "MovieLens + Sentence Transformers + Qwen + LoRA"
 )
+
