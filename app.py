@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 
 @st.cache_resource(show_spinner="Loading movie engine...")
 def load_movie_engine():
@@ -141,6 +142,32 @@ hr {
     border-color: #263449;
 }
 
+.movie-badge {
+    display: inline-block;
+    background: #263653;
+    color: #bfdbfe;
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 5px 5px 5px 0;
+}
+
+.movie-score {
+    color: #a5b4fc;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.movie-card {
+    background: linear-gradient(145deg, #172033, #111827);
+    padding: 22px;
+    border-radius: 16px;
+    margin-bottom: 18px;
+    border: 1px solid #263449;
+    transition: 0.2s ease;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -226,6 +253,60 @@ if page == "Home":
         "personalized recommendations."
     )
 
+    st.divider()
+
+    st.subheader("📊 Recommendation Model Performance")
+
+    st.caption("Evaluated on 920 users using held-out MovieLens ratings.")
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("Hybrid Precision@10", "14.38%")
+    col2.metric("Hybrid Recall@10", "13.20%")
+    col3.metric("Hybrid NDCG@10", "18.77%")
+
+    st.markdown("### Model Comparison")
+
+    performance_data = pd.DataFrame({
+        "Model": [
+            "Collaborative Filtering",
+            "Semantic Recommendations",
+            "Hybrid Recommendations"
+        ],
+        "Precision@10": [0.129130, 0.023152, 0.143804],
+        "Recall@10": [0.123758, 0.019993, 0.132033],
+        "NDCG@10": [0.176707, 0.034597, 0.187729]
+    })
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    performance_data.set_index("Model").plot(
+        kind="bar",
+        ax=ax,
+        width=0.75
+    )
+
+    ax.set_title("Recommendation Model Comparison", fontsize=15)
+    ax.set_ylabel("Score")
+    ax.set_xlabel("")
+    ax.set_ylim(0, 0.22)
+
+    ax.legend(
+        title="Evaluation Metrics",
+        loc="upper right"
+    )
+
+    plt.xticks(rotation=0, ha="center")
+    plt.tight_layout()
+
+    st.pyplot(fig)
+    plt.close(fig)
+
+    st.caption(
+        "Hybrid combines collaborative filtering and semantic content signals. "
+        "Metrics are based on the current MovieLens evaluation."
+    )
+
 
 # ==========================================
 # DISCOVER MOVIES
@@ -234,6 +315,22 @@ if page == "Home":
 elif page == "Discover Movies":
 
     st.title("🔍 Discover Movies")
+
+    st.markdown(
+        '<div class="subtitle">'
+        'Explore movies using collaborative filtering, '
+        'similarity matching and semantic AI search.'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.write("")
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.info("👥 Collaborative Filtering")
+    col2.info("🎬 Similar Movie Discovery")
+    col3.info("🧠 Semantic Hybrid Search")
 
     mode = st.selectbox(
         "Choose recommendation method",
@@ -281,12 +378,14 @@ elif page == "Discover Movies":
                             <div class="movie-title">
                                 {movie['title']}
                             </div>
-                            <div class="movie-meta">
-                                Genres: {movie['genre_text']}
+                            <div>
+                                <span class="movie-badge">
+                                    {movie['genre_text']}
+                                </span>
                             </div>
-                            <div class="movie-meta">
-                                Predicted rating:
-                                {movie['predicted_rating']:.2f}/5
+
+                            <div class="movie-score">
+                                ⭐ Predicted Rating: {movie['predicted_rating']:.2f}/5
                             </div>
                         </div>
                         """,
