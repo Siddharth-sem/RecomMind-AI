@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import textwrap
 
 @st.cache_resource(show_spinner="Loading movie engine...")
 def load_movie_engine():
@@ -373,7 +374,7 @@ elif page == "Discover Movies":
                 for _, movie in results.iterrows():
 
                     st.markdown(
-                        f"""
+                        textwrap.dedent(f"""
                         <div class="movie-card">
 
                             <div class="movie-title">
@@ -391,7 +392,7 @@ elif page == "Discover Movies":
                             </div>
 
                         </div>
-                        """,
+                        """),
                         unsafe_allow_html=True
                     )
 
@@ -432,7 +433,7 @@ elif page == "Discover Movies":
                 for _, movie in results.iterrows():
 
                     st.markdown(
-                        f"""
+                        textwrap.dedent(f"""
                         <div class="movie-card">
 
                             <div class="movie-title">
@@ -450,7 +451,7 @@ elif page == "Discover Movies":
                             </div>
 
                         </div>
-                        """,
+                        """),
                         unsafe_allow_html=True
                     )
 
