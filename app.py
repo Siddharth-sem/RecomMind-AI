@@ -488,27 +488,31 @@ elif page == "Discover Movies":
 
                 for _, movie in results.iterrows():
 
-                    st.markdown(
-                        f"""
+                    st.html(f"""
                         <div class="movie-card">
+
                             <div class="movie-title">
-                                {movie['title']}
+                                🎬 {movie['title']}
                             </div>
-                            <div class="movie-meta">
-                                {movie['genre_text']}
+
+                            <div>
+                                <span class="movie-badge">
+                                    {movie['genre_text']}
+                                </span>
                             </div>
-                            <div class="movie-meta">
-                                Semantic similarity:
+
+                            <div class="movie-score">
+                                🧠 Semantic Similarity:
                                 {movie['semantic_similarity']:.3f}
                             </div>
-                            <div class="movie-meta">
-                                Hybrid score:
+
+                            <div class="movie-score">
+                                ⭐ Hybrid Score:
                                 {movie['hybrid_score']:.3f}
                             </div>
+
                         </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
+                        """)
 
             except Exception as error:
                 st.error(str(error))
