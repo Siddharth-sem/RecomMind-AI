@@ -111,19 +111,6 @@ The following values are the results currently displayed by the application's ev
 
 **Interpretation:** LightFM has the strongest displayed ranking metrics among the evaluated movie models. Hybrid is strongest among the evaluated book methods and among the evaluated product methods. NMF has the highest displayed movie catalog coverage (25.98%). See [Evaluation methodology and limitations](docs/EVALUATION.md).
 
-## API configuration
-
-The app uses the TMDB API for movie metadata/posters. The project also includes a Google Books API utility for book metadata enrichment.
-
-Create a local `.env` file:
-
-```env
-TMDB_API_KEY=your_tmdb_api_key
-GOOGLE_BOOKS_API_KEY=your_google_books_api_key
-```
-
-Never commit `.env` or real API credentials.
-
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
