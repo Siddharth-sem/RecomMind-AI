@@ -27,8 +27,10 @@ rating_matrix = ratings.pivot_table(
 nmf_model = NMF(
     n_components=50,
     init="nndsvda",
-    solver="cd",
-    max_iter=300,
+    solver="mu",
+    beta_loss="frobenius",
+    max_iter=500,
+    tol=1e-4,
     random_state=42
 )
 

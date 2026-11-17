@@ -96,8 +96,10 @@ print("\nTraining NMF model...")
 nmf_model = NMF(
     n_components=N_COMPONENTS,
     init="nndsvda",
-    solver="cd",
-    max_iter=300,
+    solver="mu",
+    beta_loss="frobenius",
+    max_iter=500,
+    tol=1e-4,
     random_state=RANDOM_STATE
 )
 
