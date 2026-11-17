@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *.pyo
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Virtual environments
 venv/
@@ -11,16 +14,30 @@ env/
 # Secrets
 .env
 .env.*
+!.env.example
 
 # IDE
 .vscode/
+.idea/
 
 # Jupyter
 .ipynb_checkpoints/
 
-# Cache
+# Streamlit
+.streamlit/secrets.toml
 .streamlit/cache/
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Large raw product source data (keep processed files separately)
+datasets/products/raw/
+
+# Local exports / archives
+*.zip
