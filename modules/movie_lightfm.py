@@ -101,13 +101,38 @@ class MovieLightFM:
         self.item_id_map = self.mappings["item_id_map"]
 
         # Load movie catalog
-        self.catalog = pd.read_csv(
-            CATALOG_PATH
-        )
+        self.catalog = pd.read_csv(CATALOG_PATH)
 
         self.catalog["movie_id"] = (
             self.catalog["movie_id"].astype(int)
         )
+
+        # Load local ratings dataset for movie titles
+        if RATINGS_PATH.exists():
+
+            self.ratings = pd.read_csv(RATINGS_PATH)
+
+            self.ratings["user_id"] = (
+                self.ratings["user_id"].astype(int)
+            )
+
+            self.ratings["movie_id"] = (
+                self.ratings["movie_id"].astype(int)
+            )
+
+            # Attach movie titles if catalog doesn't contain them
+            if "title" not in self.catalog.columns:
+
+                movie_titles = (
+                    self.ratings[["movie_id", "title"]]
+                    .drop_duplicates("movie_id")
+                )
+
+                self.catalog = self.catalog.merge(
+                    movie_titles,
+                    on="movie_id",
+                    how="left"
+                )
 
         # Verify dimensions
         if self.item_features.shape[0] != len(self.catalog):

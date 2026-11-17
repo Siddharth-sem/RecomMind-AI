@@ -25,6 +25,7 @@ from modules.movie_recommender import (
     get_collaborative_recommendations,
     get_content_recommendations,
     get_personalized_hybrid_recommendations,
+    get_lightfm_recommendations,
     get_engine_info
 )
 
@@ -97,6 +98,12 @@ def display_movie_card(movie, explanation=None):
             st.write(
                 f"🎯 Hybrid Score: "
                 f"{movie['hybrid_score']:.3f}"
+            )
+
+        if movie.get("lightfm_score") is not None:
+            st.write(
+                f"⚡ LightFM Ranking Score: "
+                f"{movie['lightfm_score']:.3f}"
             )
 
         if explanation:
@@ -531,8 +538,15 @@ elif page == "Personalized Recommendations":
     st.title("✨ AI Personalized Recommendations")
 
     st.write(
-        "Describe your movie preferences and let RecomMind AI "
-        "find movies suited to your interests."
+        "Choose a recommendation model and discover movies suited to your interests."
+    )
+
+    recommendation_mode = st.selectbox(
+        "Choose recommendation algorithm",
+        [
+            "Hybrid + RAG (AI explanations)",
+            "LightFM (WARP)"
+        ]
     )
 
     user_id = st.number_input(
@@ -543,65 +557,91 @@ elif page == "Personalized Recommendations":
         key="rag_user"
     )
 
-    query = st.text_area(
-        "What kind of movies do you enjoy?",
-        placeholder=(
-            "Example: I love adventure, friendship, "
-            "emotional stories and inspiring journeys."
-        ),
-        height=120
-    )
-
     top_n = st.slider(
         "Number of recommendations",
-        3, 10, 5
+        3, 10, 5,
+        key="personalized_top_n"
     )
 
-    if st.button(
-        "Generate AI Recommendations",
-        type="primary",
-        use_container_width=True
-    ):
+    if recommendation_mode == "Hybrid + RAG (AI explanations)":
 
-        if not query.strip():
+        query = st.text_area(
+            "What kind of movies do you enjoy?",
+            placeholder=(
+                "Example: I love adventure, friendship, "
+                "emotional stories and inspiring journeys."
+            ),
+            height=120,
+            key="rag_query"
+        )
 
-            st.warning("Please describe your movie preferences.")
+        if st.button(
+            "Generate AI Recommendations",
+            type="primary",
+            use_container_width=True
+        ):
 
-        else:
+            if not query.strip():
+                st.warning("Please describe your movie preferences.")
 
+            else:
+                try:
+                    with st.spinner(
+                        "Finding movies and generating AI explanations..."
+                    ):
+                        results = generate_rag_recommendations(
+                            int(user_id),
+                            query,
+                            top_n
+                        )
+
+                    if results.empty:
+                        st.warning("No recommendations found.")
+                    else:
+                        st.success(
+                            f"Found {len(results)} personalized recommendations!"
+                        )
+
+                        for _, movie in results.iterrows():
+                            display_movie_card(
+                                movie,
+                                explanation=movie["explanation"]
+                            )
+
+                except Exception as error:
+                    st.error(f"Something went wrong: {error}")
+
+    else:
+
+        st.info(
+            "LightFM uses learned user and movie-feature embeddings "
+            "to rank recommendations. It does not use the text preference query."
+        )
+
+        if st.button(
+            "Generate LightFM Recommendations",
+            type="primary",
+            use_container_width=True
+        ):
             try:
-
-                with st.spinner(
-                    "RecomMind AI is finding your movies and "
-                    "generating explanations..."
-                ):
-
-                    results = generate_rag_recommendations(
+                with st.spinner("LightFM is ranking movies for this user..."):
+                    results = get_lightfm_recommendations(
                         int(user_id),
-                        query,
-                        top_n
+                        top_n=top_n
                     )
 
                 if results.empty:
-
-                    st.warning("No recommendations found.")
-
+                    st.warning("No LightFM recommendations found.")
                 else:
-
                     st.success(
-                        f"Found {len(results)} personalized recommendations!"
+                        f"Generated {len(results)} LightFM recommendations!"
                     )
 
                     for _, movie in results.iterrows():
-
-                        display_movie_card(
-                            movie,
-                            explanation=movie["explanation"]
-                        )
+                        display_movie_card(movie)
 
             except Exception as error:
-
-                st.error(f"Something went wrong: {error}")
+                st.error(f"LightFM recommendation failed: {error}")
 
 
 # ==========================================

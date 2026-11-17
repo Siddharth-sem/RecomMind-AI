@@ -333,8 +333,50 @@ def retrieve_personalized_movies(
     ]
 
 
+
+
 # ==========================================
-# 6. ENGINE INFORMATION
+# 6. LIGHTFM RECOMMENDATIONS
+# ==========================================
+
+def get_lightfm_recommendations(user_id, top_n=10):
+    """
+    Generate personalized recommendations using the exported LightFM WARP model.
+    Imported lazily so the existing movie engine remains independent of LightFM.
+    """
+    user_id = validate_user(user_id)
+    validate_top_n(top_n)
+
+    from modules.movie_lightfm import (
+        get_lightfm_recommendations as get_lightfm_results
+    )
+
+    results = get_lightfm_results(user_id, top_n=top_n)
+
+    if results is None or results.empty:
+        return pd.DataFrame(
+            columns=["movie_id", "title", "lightfm_score"]
+        )
+
+    results = results.copy()
+
+    # Keep a consistent score-column name for the Streamlit display.
+    if "score" in results.columns:
+        results = results.rename(columns={"score": "lightfm_score"})
+
+    required_columns = ["movie_id", "title", "lightfm_score"]
+    missing = [column for column in required_columns if column not in results.columns]
+    if missing:
+        raise ValueError(
+            "LightFM results are missing required columns: "
+            + ", ".join(missing)
+        )
+
+    return results[required_columns].head(top_n).reset_index(drop=True)
+
+
+# ==========================================
+# 7. ENGINE INFORMATION
 # ==========================================
 
 def get_engine_info():
